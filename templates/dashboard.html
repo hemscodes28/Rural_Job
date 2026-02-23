@@ -6,7 +6,12 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Welcome back, {{ current_user.username }}!</h2>
-        <p>Here are some job recommendations based on your profile.</p>
+        <p>Here are personalized job recommendations based on your skills, career interests, and profile information.</p>
+        {% if current_user.preferences %}
+            <div class="alert alert-info">
+                <strong>Your preferences:</strong> {{ current_user.preferences }}
+            </div>
+        {% endif %}
     </div>
 </div>
 

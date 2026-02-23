@@ -134,14 +134,58 @@ def profile():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Simple recommendation: match preferences with job skills
+    # Enhanced recommendation system based on user profile
     recommended_jobs = []
+    job_scores = {}  # To store jobs with their relevance scores
+
     if current_user.preferences:
-        user_skills = [skill.strip().lower() for skill in current_user.preferences.split(',')]
+        user_preferences = [pref.strip().lower() for pref in current_user.preferences.split(',')]
+
         for _, job in jobs_df.iterrows():
-            if job['skills_required'].lower() in user_skills:
-                recommended_jobs.append(job.to_dict())
-    return render_template('dashboard.html', jobs=recommended_jobs[:5])  # Show top 5
+            score = 0
+            job_dict = job.to_dict()
+
+            # 1. Skill matching (highest weight)
+            job_skills = job['skills_required'].lower()
+            for pref in user_preferences:
+                if pref in job_skills:
+                    score += 10  # High score for skill match
+
+            # 2. Job title/role matching
+            job_title = job['job_title'].lower()
+            job_description = job['description'].lower()
+            for pref in user_preferences:
+                if pref in job_title:
+                    score += 8  # Good score for title match
+                if pref in job_description:
+                    score += 5  # Moderate score for description match
+
+            # 3. Consider user's biodata for additional context
+            if current_user.biodata:
+                biodata_lower = current_user.biodata.lower()
+                # Look for keywords in biodata that might indicate career interests
+                career_keywords = ['experience', 'worked', 'background', 'education', 'degree', 'certificate']
+                for keyword in career_keywords:
+                    if keyword in biodata_lower:
+                        # If biodata mentions relevant experience, boost score
+                        for pref in user_preferences:
+                            if pref in biodata_lower:
+                                score += 3
+
+            # Only include jobs with a minimum score
+            if score > 0:
+                job_dict['relevance_score'] = score
+                job_scores[job_dict['job_title']] = (job_dict, score)
+
+    # Sort jobs by relevance score (highest first) and take top recommendations
+    sorted_jobs = sorted(job_scores.values(), key=lambda x: x[1], reverse=True)
+    recommended_jobs = [job for job, score in sorted_jobs[:8]]  # Show top 8 recommendations
+
+    # If no recommendations found, show some general jobs
+    if not recommended_jobs:
+        recommended_jobs = jobs_df.head(5).to_dict('records')
+
+    return render_template('dashboard.html', jobs=recommended_jobs)
 
 @app.route('/jobs')
 @login_required
