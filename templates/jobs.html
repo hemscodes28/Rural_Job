@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}All Jobs - Rural Job Finder{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>All Available Jobs</h2>
+        <p>Browse through all job opportunities in rural areas.</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for job in jobs %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ job.job_title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
+                <p class="card-text">{{ job.description }}</p>
+                <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+                <p class="card-text"><strong>Skills:</strong> {{ job.skills_required }}</p>
+                <p class="card-text"><strong>Salary:</strong> ${{ job.salary }}</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('apply', job_title=job.job_title) }}" class="btn btn-primary btn-block">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

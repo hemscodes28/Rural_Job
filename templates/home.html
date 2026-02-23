@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Rural Job Finder{% endblock %}
+
+{% block content %}
+<div class="hero text-center">
+    <div class="container">
+        <h1 class="display-4">Find Your Dream Job in Rural Areas</h1>
+        <p class="lead">Connect with opportunities that match your skills and location. Build a brighter future in your community.</p>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('signup') }}" class="btn btn-light btn-lg mr-3">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Create Your Profile</h5>
+                <p class="card-text">Upload your biodata and resume, specify your skills and preferences.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Discover Opportunities</h5>
+                <p class="card-text">Get personalized job recommendations based on your profile and location.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-handshake fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Apply & Succeed</h5>
+                <p class="card-text">Apply to jobs easily and track your applications in one place.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <h2>Why Choose Rural Job Finder?</h2>
+    <p class="lead">Addressing unemployment in rural areas through targeted job matching and skill-based recommendations.</p>
+</div>
+{% endblock %}
